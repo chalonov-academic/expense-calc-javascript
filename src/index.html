@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Gastos Personales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .summary {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 18px;
+            color: #667eea;
+        }
+
+        .expenses-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .expense-item {
+            background: #fff;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-category {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .expense-description {
+            font-weight: 500;
+            color: #333;
+            margin: 4px 0;
+        }
+
+        .expense-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .expense-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .no-expenses {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Calculadora de Gastos</h1>
+            <p>Gestiona tus finanzas personales de manera inteligente</p>
+        </div>
+
+        <form id="expenseForm">
+            <div class="form-group">
+                <label for="description">Descripción del gasto:</label>
+                <input type="text" id="description" required placeholder="Ej: Almuerzo en restaurante">
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Monto ($):</label>
+                <input type="number" id="amount" step="0.01" required placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Categoría:</label>
+                <select id="category" required>
+                    <option value="">Selecciona una categoría</option>
+                    <option value="alimentacion">🍽️ Alimentación</option>
+                    <option value="transporte">🚗 Transporte</option>
+                    <option value="entretenimiento">🎬 Entretenimiento</option>
+                    <option value="salud">🏥 Salud</option>
+                    <option value="educacion">📚 Educación</option>
+                    <option value="hogar">🏠 Hogar</option>
+                    <option value="ropa">👕 Ropa</option>
+                    <option value="otros">📦 Otros</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn">➕ Agregar Gasto</button>
+        </form>
+
+        <div class="summary">
+            <h3>📊 Resumen Financiero</h3>
+            <div class="summary-item">
+                <span>Total de gastos:</span>
+                <span id="totalExpenses">$0.00</span>
+            </div>
+            <div class="summary-item">
+                <span>Número de gastos:</span>
+                <span id="expenseCount">0</span>
+            </div>
+            <div class="summary-item">
+                <span>Gasto promedio:</span>
+                <span id="averageExpense">$0.00</span>
+            </div>
+        </div>
+
+        <div class="expenses-list" id="expensesList">
+            <div class="no-expenses">
+                📝 No hay gastos registrados aún.<br>
+                ¡Comienza agregando tu primer gasto!
+            </div>
+        </div>
+
+        <button class="btn" onclick="clearAllExpenses()" style="background: #e74c3c; margin-top: 20px;">
+            🗑️ Limpiar Todos los Gastos
+        </button>
+    </div>
+
+    <script>
+        class ExpenseTracker {
+            constructor() {
+                this.expenses = this.loadExpenses();
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateDisplay();
+            }
+
+            bindEvents() {
+                document.getElementById('expenseForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addExpense();
+                });
+            }
+
+            addExpense() {
+                const description = document.getElementById('description').value;
+                const amount = parseFloat(document.getElementById('amount').value);
+                const category = document.getElementById('category').value;
+
+                if (!description || !amount || !category) {
+                    alert('Por favor, completa todos los campos');
+                    return;
+                }
+
+                const expense = {
+                    id: Date.now(),
+                    description,
+                    amount,
+                    category,
+                    date: new Date().toLocaleDateString('es-ES')
+                };
+
+                this.expenses.push(expense);
+                this.saveExpenses();
+                this.updateDisplay();
+                this.clearForm();
+
+                // Animación de éxito
+                this.showSuccessMessage();
+            }
+
+            showSuccessMessage() {
+                const form = document.getElementById('expenseForm');
+                const originalBg = form.style.background;
+                form.style.background = '#d4edda';
+                form.style.transition = 'background 0.3s';
+                
+                setTimeout(() => {
+                    form.style.background = originalBg;
+                }, 1000);
+            }
+
+            deleteExpense(id) {
+                if (confirm('¿Estás seguro de eliminar este gasto?')) {
+                    this.expenses = this.expenses.filter(expense => expense.id !== id);
+                    this.saveExpenses();
+                    this.updateDisplay();
+                }
+            }
+
+            clearForm() {
+                document.getElementById('expenseForm').reset();
+            }
+
+            updateDisplay() {
+                this.updateSummary();
+                this.updateExpensesList();
+            }
+
+            updateSummary() {
+                const total = this.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+                const count = this.expenses.length;
+                const average = count > 0 ? total / count : 0;
+
+                document.getElementById('totalExpenses').textContent = `$${total.toFixed(2)}`;
+                document.getElementById('expenseCount').textContent = count;
+                document.getElementById('averageExpense').textContent = `$${average.toFixed(2)}`;
+            }
+
+            updateExpensesList() {
+                const container = document.getElementById('expensesList');
+                
+                if (this.expenses.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-expenses">
+                            📝 No hay gastos registrados aún.<br>
+                            ¡Comienza agregando tu primer gasto!
+                        </div>
+                    `;
+                    return;
+                }
+
+                const sortedExpenses = [...this.expenses].sort((a, b) => b.id - a.id);
+                
+                container.innerHTML = sortedExpenses.map(expense => `
+                    <div class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-category">${this.getCategoryName(expense.category)}</div>
+                            <div class="expense-description">${expense.description}</div>
+                            <div class="expense-date">${expense.date}</div>
+                        </div>
+                        <div class="expense-amount">$${expense.amount.toFixed(2)}</div>
+                        <button class="delete-btn" onclick="expenseTracker.deleteExpense(${expense.id})">
+                            ×
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            getCategoryName(category) {
+                const categories = {
+                    'alimentacion': '🍽️ Alimentación',
+                    'transporte': '🚗 Transporte',
+                    'entretenimiento': '🎬 Entretenimiento',
+                    'salud': '🏥 Salud',
+                    'educacion': '📚 Educación',
+                    'hogar': '🏠 Hogar',
+                    'ropa': '👕 Ropa',
+                    'otros': '📦 Otros'
+                };
+                return categories[category] || category;
+            }
+
+            saveExpenses() {
+                localStorage.setItem('expenses', JSON.stringify(this.expenses));
+            }
+
+            loadExpenses() {
+                const saved = localStorage.getItem('expenses');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            clearAll() {
+                this.expenses = [];
+                this.saveExpenses();
+                this.updateDisplay();
+            }
+        }
+
+        // Función global para limpiar gastos
+        function clearAllExpenses() {
+            if (confirm('¿Estás seguro de eliminar TODOS los gastos? Esta acción no se puede deshacer.')) {
+                expenseTracker.clearAll();
+            }
+        }
+
+        // Inicializar la aplicación
+        const expenseTracker = new ExpenseTracker();
+
+        // Agregar algunos datos de ejemplo al cargar por primera vez
+        if (expenseTracker.expenses.length === 0) {
+            console.log('🚀 Aplicación de Gastos Personales iniciada');
+            console.log('💡 Tip: Los datos se guardan en localStorage');
+        }
+    </script>
+</body>
+</html>

@@ -1,1 +1,1 @@
-# expense-calc-javascript-ec2
+# Calculadora de gastos
