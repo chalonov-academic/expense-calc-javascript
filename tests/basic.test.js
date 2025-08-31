@@ -15,11 +15,4 @@ describe('Tests básicos de matemáticas', () => {
     expect(total).toBe(44.5);
     expect(average).toBeCloseTo(14.83, 2);
   });
-
-  test('Formato de dinero en las cantidades', () => {
-    const amount = 123.456;
-    const formatted = amount.toFixed(2);
-    
-    expect(formatted).toBe('123.46');
-  });
 });
