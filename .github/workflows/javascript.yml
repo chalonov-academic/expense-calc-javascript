@@ -1,0 +1,61 @@
+# .github/workflows/javascript.yml
+name: JavaScript CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install testing dependencies
+      run: |
+        npm init -y
+        npm install --save-dev jest jsdom
+
+    - name: Run basic tests
+      run: |
+        npm test
+
+    - name: Validate HTML syntax
+      run: |
+        # Verificar que el HTML existe y no está vacío
+        if [ ! -f "src/index.html" ]; then
+          echo "Error: src/index.html no encontrado"
+          exit 1
+        fi
+        
+        # Verificar que el archivo tiene contenido
+        if [ ! -s "src/index.html" ]; then
+          echo "Error: src/index.html está vacío"
+          exit 1
+        fi
+        
+        echo "HTML file validation passed"
+
+    - name: Check JavaScript syntax
+      run: |
+        # Extraer JavaScript del HTML y verificar sintaxis
+        node -c <(grep -oP '(?<=<script>).*?(?=</script>)' src/index.html)
+        echo "JavaScript syntax check passed"
+
+    - name: Test Python HTTP server
+      run: |
+        # Verificar que Python puede servir archivos estáticos
+        cd src
+        timeout 5 python3 -m http.server 8000 &
+        sleep 2
+        curl -f http://localhost:8000/ > /dev/null
+        echo "Python HTTP server test passed"

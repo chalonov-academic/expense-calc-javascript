@@ -1,5 +1,8 @@
 # 💰 Calculadora de Gastos - Deployment en AWS EC2
 
+![AWS EC2](https://img.shields.io/badge/deploy-AWS%20EC2-orange?logo=amazon-aws) 
+![JavaScript CI](https://github.com/chalonov/expense-calc-javascript-ec2/workflows/JavaScript%20CI/badge.svg)
+
 Una aplicación web para gestionar gastos personales desplegada en Amazon EC2 usando servidor Python.
 
 ## 📋 Descripción del Proyecto
