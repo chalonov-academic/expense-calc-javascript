@@ -21,10 +21,10 @@ jobs:
         node-version: '18'
 
     - name: Install testing dependencies
-          run: |
-            npm init -y
-            npm install --save-dev jest jest-environment-jsdom
-    
+      run: |
+        npm init -y
+        npm install --save-dev jest jest-environment-jsdom
+
     - name: Run basic tests
       run: |
         npm test
