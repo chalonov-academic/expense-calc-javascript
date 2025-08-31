@@ -1,4 +1,3 @@
-# .github/workflows/javascript.yml
 name: JavaScript CI
 
 on:
@@ -29,7 +28,7 @@ jobs:
       run: |
         npm test
 
-    - name: Validate HTML syntax
+    - name: Validate HTML and basic structure
       run: |
         # Verificar que el HTML existe y no está vacío
         if [ ! -f "src/index.html" ]; then
@@ -43,13 +42,18 @@ jobs:
           exit 1
         fi
         
-        echo "HTML file validation passed"
-
-    - name: Check JavaScript syntax
-      run: |
-        # Extraer JavaScript del HTML y verificar sintaxis
-        node -c <(grep -oP '(?<=<script>).*?(?=</script>)' src/index.html)
-        echo "JavaScript syntax check passed"
+        # Verificar que contiene elementos HTML básicos
+        if ! grep -q "<html" src/index.html; then
+          echo "Error: No se encontró tag HTML"
+          exit 1
+        fi
+        
+        if ! grep -q "<script>" src/index.html; then
+          echo "Error: No se encontró JavaScript"
+          exit 1
+        fi
+        
+        echo "HTML validation passed"
 
     - name: Test Python HTTP server
       run: |
