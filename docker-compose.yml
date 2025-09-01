@@ -1,0 +1,26 @@
+# docker-compose.yml
+# Configuración para ejecutar la aplicación con Docker Compose
+version: '3.8'
+
+services:
+  expense-calculator:
+    build: .
+    container_name: calculadora-gastos
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    labels:
+      - "com.example.description=Calculadora de Gastos JavaScript"
+      - "com.example.version=1.0"
+    
+    # Variables de entorno (si necesitas alguna)
+    environment:
+      - NODE_ENV=production
+    
+    # Health check para verificar que la aplicación esté funcionando
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
